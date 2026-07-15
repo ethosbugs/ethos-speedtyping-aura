@@ -1,0 +1,144 @@
+/* ============================================
+   Ethos Speedtyping v7 — profile.css
+   ============================================ */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 30px;
+  margin-bottom: 18px;
+}
+
+.avatar-ring {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--level-progress, 40%), var(--glass-border) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-inner {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.profile-name-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 2px 0;
+}
+
+.profile-name-input:focus { outline: none; border-bottom-color: var(--accent); }
+
+.level-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--accent-soft);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.profile-sub {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.xp-bar-track {
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.3);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.5s var(--ease);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  padding: 0 30px 30px;
+}
+
+.profile-stat-card {
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.profile-stat-card .metric-label { margin-top: 6px; }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-row:last-child { border-bottom: none; }
+
+.settings-label { font-size: 0.85rem; color: var(--text-secondary); }
+.settings-label-sub { font-size: 0.72rem; color: var(--text-dim); }
+
+.toggle {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.toggle.on { border-color: var(--accent-soft); background: var(--accent-soft); }
+.toggle.on::after { transform: translateX(18px); background: var(--accent); }

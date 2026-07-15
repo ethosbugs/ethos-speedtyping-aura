@@ -1,0 +1,12 @@
+{
+  "phrases": [
+    "const active = document.querySelector('.key');",
+    "localStorage.setItem('ethos_theme', themeName);",
+    "return history.reduce((a, b) => a + b, 0);",
+    "document.addEventListener('keydown', handleKey);",
+    "function calculateWpm(chars, seconds) { return Math.round((chars / 5) / (seconds / 60)); }",
+    "export const themes = ['midnight', 'aurora', 'ember', 'mono'].map(t => t.toLowerCase());",
+    "if (e.code === 'KeyF' || e.code === 'KeyJ') { button.classList.add('key-guide'); }",
+    "const updateLeaderboard = (userCount) => { const bots = [{name: 'MecaBot', sessions: 50}]; bots.push({name: 'You', sessions: userCount}); return bots.sort((x, y) => y.sessions - x.sessions); };"
+  ]
+}

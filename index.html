@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethos Speedtyping v7.3</title>
+  <meta name="description" content="Test de mecanografía moderno con teclado interactivo, filtros de accesibilidad y carrusel centrado.">
+  <meta name="theme-color" content="#0a0c12">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body data-theme="midnight">
+
+  <div id="onboardingModal" class="modal-overlay" style="display: none;">
+    <div class="glass-panel modal-content">
+      <div class="modal-header">
+        <h2>⚡ ¡Bienvenido a Ethos Speedtyping!</h2>
+      </div>
+      <p>Lleva tu velocidad de escritura al siguiente nivel con nuestro sistema de carrusel interactivo en tiempo real.</p>
+      <div class="tutorial-steps">
+        <div class="step">
+          <span class="step-num">1</span>
+          <p><strong>Escribe:</strong> La palabra activa siempre estará en el centro de tu pantalla.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <p><strong>Corrige:</strong> Si fallas una letra, se iluminará de rojo. ¡Corrígela para avanzar!</p>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <p><strong>Ahorra tiempo:</strong> Usa <kbd>Ctrl</kbd> + <kbd>Enter</kbd> en cualquier momento para reiniciar.</p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="closeOnboardingBtn">¡Entendido, a escribir!</button>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <header class="topbar glass-panel">
+      <div class="brand">
+        <span class="brand-mark">Ethos<span>Speedtyping</span></span>
+        <span class="brand-version">v7.3</span>
+      </div>
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-view="typingView">Escribir</button>
+        <button class="nav-tab" data-view="practiceView">Práctica Interactiva</button>
+        <button class="nav-tab" data-view="dashboardView">Dashboard</button>
+        <button class="nav-tab" data-view="profileView">Perfil</button>
+        <button class="nav-tab" data-view="rankingView">Ranking</button>
+        <button class="nav-tab" data-view="settingsView">Ajustes</button>
+      </nav>
+    </header>
+
+    <main id="typingView" class="view active">
+      <div id="typingPanel" class="glass-panel typing-panel">
+        <div class="config-bar">
+          <div class="chip-group">
+            <button class="chip active" data-mode="time">Tiempo</button>
+            <button class="chip" data-mode="words">Palabras</button>
+          </div>
+          <div class="chip-group" id="durationChips">
+            <button class="chip active" data-value="15">15s</button>
+            <button class="chip" data-value="30">30s</button>
+            <button class="chip" data-value="60">60s</button>
+            <button class="chip" data-value="120">120s</button>
+          </div>
+          <div class="chip-group" id="wordChips" style="display: none;">
+            <button class="chip" data-value="5">5 pal. (Fácil)</button>
+            <button class="chip active" data-value="10">10 pal.</button>
+            <button class="chip" data-value="25">25 pal.</button>
+            <button class="chip" data-value="50">50 pal.</button>
+          </div>
+          <select id="categorySelect" class="category-select">
+            <option value="spanish">Español General</option>
+            <option value="english">Inglés Básico</option>
+            <option value="code">Programación (JS/HTML)</option>
+            <option value="gaming">Gaming</option>
+            <option value="science">Ciencia</option>
+          </select>
+        </div>
+
+        <div class="live-metrics">
+          <div class="metric accent">
+            <div class="metric-value" id="wpmValue">0</div>
+            <div class="metric-label">WPM</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="accValue">100%</div>
+            <div class="metric-label">Precisión</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value" id="timeValue">30</div>
+            <div class="metric-label" id="timerLabel">Tiempo</div>
+          </div>
+        </div>
+
+        <label for="hiddenInput" class="carousel-container" style="display: flex; cursor: text;">
+          <div id="textDisplay" class="text-display"></div>
+          <input id="hiddenInput" class="hidden-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: text; z-index: 2;" />
+        </label>
+
+        <div class="start-hint" id="startHint">Haz clic en el cuadro de texto de arriba para empezar a escribir...</div>
+
+        <div class="action-row">
+          <button class="btn" id="restartBtn">↻ Reiniciar</button>
+          <span class="shortcut-tip">Tip: Pulsa <kbd>Ctrl</kbd> + <kbd>Enter</kbd> para reiniciar rápido</span>
+        </div>
+
+        <div class="interactive-keyboard" id="mainKeyboard">
+          <div class="kbd-row row-letters-1">
+            <span class="key key-tab">Tab</span>
+            <span class="key" data-key="Q">Q</span><span class="key" data-key="W">W</span><span class="key" data-key="E">E</span><span class="key" data-key="R">R</span><span class="key" data-key="T">T</span>
+            <span class="key" data-key="Y">Y</span><span class="key" data-key="U">U</span><span class="key" data-key="I">I</span><span class="key" data-key="O">O</span><span class="key" data-key="P">P</span>
+            <span class="key key-bracket">[</span>
+          </div>
+          <div class="kbd-row row-letters-2">
+            <span class="key key-caps">Bloq Mayús</span>
+            <span class="key" data-key="A">A</span><span class="key" data-key="S">S</span><span class="key" data-key="D">D</span><span class="key" data-key="F">F</span><span class="key" data-key="G">G</span>
+            <span class="key" data-key="H">H</span><span class="key" data-key="J">J</span><span class="key" data-key="K">K</span><span class="key" data-key="L">L</span><span class="key" data-key="Ñ">Ñ</span>
+            <span class="key key-quote">"</span>
+          </div>
+          <div class="kbd-row row-letters-3">
+            <span class="key key-shift-l">Shift</span>
+            <span class="key" data-key="Z">Z</span><span class="key" data-key="X">X</span><span class="key" data-key="C">C</span><span class="key" data-key="V">V</span><span class="key" data-key="B">B</span>
+            <span class="key" data-key="N">N</span><span class="key" data-key="M">M</span><span class="key" data-key="COMMA">,</span><span class="key" data-key="PERIOD">.</span><span class="key" data-key="MINUS">-</span>
+            <span class="key key-shift-r">Shift</span>
+          </div>
+          <div class="kbd-row row-bottom">
+            <span class="key key-ctrl">Ctrl</span>
+            <span class="key key-space" data-key="SPACE">Espacio</span>
+            <span class="key key-enter" data-key="ENTER">Enter ↵</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="resultsPanel" class="glass-panel results-card" style="display:none">
+        <h2>🎉 Resultados de la Sesión</h2>
+        <div class="results-grid">
+          <div class="result-box">
+            <span class="result-num" id="resWpm">0</span>
+            <span class="result-lbl">WPM (Velocidad)</span>
+          </div>
+          <div class="result-box">
+            <span class="result-num" id="resAcc">100%</span>
+            <span class="result-lbl">Precisión</span>
+          </div>
+          <div class="result-box">
+            <span class="result-num" id="resKeys">0</span>
+            <span class="result-lbl">Teclas correctas/errores</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="closeResultsBtn">Escribir de nuevo</button>
+      </div>
+    </main>
+
+    <section id="practiceView" class="view">
+      <div class="glass-panel dash-card">
+        <h3 class="section-heading">🎯 Práctica Guiada (Palabras Sencillas)</h3>
+        <p class="section-sub">Escribe la palabra resaltada siguiendo la tecla iluminada en el teclado interactivo. Al completarla, avanzarás automáticamente a la siguiente.</p>
+        <p class="section-sub" id="practiceCounter" style="margin-top:-12px">0 palabras completadas</p>
+        
+        <label for="practiceHiddenInput" class="carousel-container practice-carousel" style="display: flex; cursor: text; position: relative;">
+          <div id="practiceTextDisplay" class="text-display practice-word-display"></div>
+          <input id="practiceHiddenInput" class="hidden-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: text; z-index: 2;" />
+        </label>
+        
+        <div class="interactive-keyboard" id="digitalKeyboard">
+          <div class="kbd-row row-letters-1">
+            <span class="key key-tab">Tab</span>
+            <span class="key" data-key="Q">Q</span><span class="key" data-key="W">W</span><span class="key" data-key="E">E</span><span class="key" data-key="R">R</span><span class="key" data-key="T">T</span>
+            <span class="key" data-key="Y">Y</span><span class="key" data-key="U">U</span><span class="key" data-key="I">I</span><span class="key" data-key="O">O</span><span class="key" data-key="P">P</span>
+            <span class="key key-bracket">[</span>
+          </div>
+          <div class="kbd-row row-letters-2">
+            <span class="key key-caps">Bloq Mayús</span>
+            <span class="key" data-key="A">A</span><span class="key" data-key="S">S</span><span class="key" data-key="D">D</span><span class="key" data-key="F">F</span><span class="key" data-key="G">G</span>
+            <span class="key" data-key="H">H</span><span class="key" data-key="J">J</span><span class="key" data-key="K">K</span><span class="key" data-key="L">L</span><span class="key" data-key="Ñ">Ñ</span>
+            <span class="key key-quote">"</span>
+          </div>
+          <div class="kbd-row row-letters-3">
+            <span class="key key-shift-l">Shift</span>
+            <span class="key" data-key="Z">Z</span><span class="key" data-key="X">X</span><span class="key" data-key="C">C</span><span class="key" data-key="V">V</span><span class="key" data-key="B">B</span>
+            <span class="key" data-key="N">N</span><span class="key" data-key="M">M</span><span class="key" data-key="COMMA">,</span><span class="key" data-key="PERIOD">.</span><span class="key" data-key="MINUS">-</span>
+            <span class="key key-shift-r">Shift</span>
+          </div>
+          <div class="kbd-row row-bottom">
+            <span class="key key-ctrl">Ctrl</span>
+            <span class="key key-space" data-key="SPACE">Espacio</span>
+            <span class="key key-enter" data-key="ENTER">Enter ↵</span>
+          </div>
+        </div>
+        
+        <div class="action-row" style="margin-top:20px;">
+          <button class="btn btn-primary" id="nextPracticeBtn">Siguiente Frase</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboardView" class="view">
+      <div class="dash-summary-row">
+        <div class="dash-mini-stat glass-panel">
+          <div class="metric-value" id="dashTestsCompleted">0</div>
+          <div class="metric-label">Tests completados</div>
+        </div>
+        <div class="dash-mini-stat glass-panel">
+          <div class="metric-value" id="dashBestWpm">0</div>
+          <div class="metric-label">Mejor WPM</div>
+        </div>
+        <div class="dash-mini-stat glass-panel">
+          <div class="metric-value" id="dashAvgWpm">0</div>
+          <div class="metric-label">WPM promedio</div>
+        </div>
+        <div class="dash-mini-stat glass-panel">
+          <div class="metric-value" id="dashAvgAcc">100%</div>
+          <div class="metric-label">Precisión media</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="glass-panel dash-card chart-card">
+          <h3 class="section-heading">Evolución de Velocidad (WPM)</h3>
+          <p class="section-sub">Gráfica lineal de tus últimas sesiones realizadas</p>
+          <div class="canvas-container">
+            <canvas id="progressChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-panel dash-card">
+          <h3 class="section-heading">Historial Reciente</h3>
+          <p class="section-sub">Resultados guardados localmente</p>
+          <div class="history-list" id="historyList">
+            <p style="color:var(--text-muted)">Completa un test para guardar estadísticas de progreso.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="profileView" class="view">
+      <div class="glass-panel dash-card">
+        <h3 class="section-heading">Perfil de Mecanógrafo</h3>
+        <p class="section-sub">Personaliza tu identidad visual y progresa en los rangos.</p>
+        
+        <div class="profile-container">
+          <div class="avatar-column">
+            <div class="profile-avatar-wrapper" id="profileFrame">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ethos1" alt="Avatar de Usuario" class="profile-avatar-img" id="currentAvatarImg">
+            </div>
+            
+            <h4 style="margin-top: 15px; text-align:center;">Cambiar Avatar:</h4>
+            <div class="avatar-selector-grid">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Ethos1" class="avatar-option" data-avatar="Ethos1">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Cyber" class="avatar-option" data-avatar="Cyber">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Neon" class="avatar-option" data-avatar="Neon">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Retro" class="avatar-option" data-avatar="Retro">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Alpha" class="avatar-option" data-avatar="Alpha">
+            </div>
+          </div>
+
+          <div class="profile-details-column">
+            <div class="form-group">
+              <label for="usernameInput">Nombre de Usuario:</label>
+              <input type="text" id="usernameInput" class="custom-input" value="EthosTypist">
+            </div>
+
+            <div class="profile-rank-card" style="margin-top: 15px;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4>Rango de Escritura</h4>
+                <div class="rank-badge" id="userRank">Recluta (Bronce)</div>
+              </div>
+              
+              <div class="xp-bar-container">
+                <div class="xp-bar-fill" id="xpBarFill" style="width: 25%;"></div>
+              </div>
+              <div class="xp-labels">
+                <span id="xpCurrent">25 WPM</span>
+                <span id="xpGoal">Siguiente Rango: 40 WPM</span>
+              </div>
+              <p style="margin-top: 12px; font-size: 0.85rem; color: var(--text-muted);">Completa tests para incrementar tu velocidad punta de WPM y desbloquear nuevos marcos dinámicos para tu avatar.</p>
+            </div>
+
+            <button class="btn btn-primary" id="saveProfileBtn" style="width: 100%; justify-content: center; margin-top: 15px;">Guardar Perfil</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rankingView" class="view">
+      <div class="glass-panel dash-card">
+        <h3 class="section-heading">🏆 Clasificación</h3>
+        <p class="section-sub">Puntuación = media ponderada (50/50) entre tu mejor WPM histórico y tu constancia (tests completados), normalizada frente al resto de mecanógrafos.</p>
+        <table class="ranking-table">
+          <thead>
+            <tr><th>#</th><th>Nombre</th><th>Mejor WPM</th><th>Tests</th><th>Puntuación</th></tr>
+          </thead>
+          <tbody id="rankingLeaderboardBody"></tbody>
+        </table>
+        <div class="ranking-legend"><span>Actualizado automáticamente con cada test completado.</span></div>
+      </div>
+    </section>
+
+    <section id="settingsView" class="view">
+      <div class="glass-panel dash-card">
+        <h3 class="section-heading">Tema visual</h3>
+        <p class="section-sub">Elige la paleta de color de la app</p>
+        <div class="theme-grid" id="themeGrid">
+          <div class="theme-option active" data-theme="midnight">Midnight</div>
+          <div class="theme-option" data-theme="aurora">Aurora</div>
+          <div class="theme-option" data-theme="ember">Ember</div>
+          <div class="theme-option" data-theme="mono">Mono Dark</div>
+        </div>
+      </div>
+
+      <div class="glass-panel dash-card" style="margin-top:18px">
+        <h3 class="section-heading">Filtros de Accesibilidad y Configuración</h3>
+        
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Ignorar Mayúsculas</div>
+            <div class="settings-label-sub">Fuerza a que todo el texto aparezca y se valide solo en minúsculas</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="ignoreCaseToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Ignorar Signos de Puntuación</div>
+            <div class="settings-label-sub">Elimina comas, puntos y símbolos especiales del generador de texto</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="ignorePunctuationToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-row" style="margin-top:10px;">
+          <div>
+            <div class="settings-label">Efectos de sonido mecánicos</div>
+            <div class="settings-label-sub">Genera un clic sintético realista por pulsación</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-row" style="margin-top:10px;">
+          <div>
+            <div class="settings-label">Teclado virtual</div>
+            <div class="settings-label-sub">Muestra el teclado interactivo con guías F/J al escribir</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="virtualKeyboardToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="glass-panel dash-card" style="margin-top:18px">
+        <h3 class="section-heading">Datos del Sistema</h3>
+        <p class="section-sub">Limpia las estadísticas de localStorage de tu navegador</p>
+        <button class="btn btn-danger" id="resetStatsBtn">Restablecer Aplicación</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/storage/utils.js"></script>
+  <script src="js/services/settings.js"></script>
+  <script src="js/services/timer.js"></script>
+  <script src="js/services/stats.js"></script>
+  <script src="js/services/history.js"></script>
+  <script src="js/services/profile.js"></script>
+  <script src="js/services/themes.js"></script>
+  <script src="js/services/ranking.js"></script>
+  <script src="js/services/keyboard.js"></script>
+  <script src="js/services/typing.js"></script>
+  <script src="js/services/practice.js"></script>
+  <script src="js/core/app.js"></script>
+</body>
+</html>

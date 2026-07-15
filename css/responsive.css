@@ -1,0 +1,42 @@
+/* ============================================
+   Ethos Speedtyping v7 — responsive.css
+   ============================================ */
+
+@media (max-width: 760px) {
+  .app-shell { padding: 16px 12px 40px; gap: 14px; }
+
+  .topbar {
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .nav-tabs { width: 100%; overflow-x: auto; }
+  .nav-tab { padding: 8px 12px; font-size: 0.78rem; white-space: nowrap; }
+
+  .typing-panel { padding: 24px 18px 22px; gap: 18px; }
+
+  .text-display {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    padding: 18px 16px;
+  }
+
+  .live-metrics { gap: 18px; }
+  .metric-value { font-size: 1.5rem; }
+
+  .results-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .dash-summary-row { grid-template-columns: repeat(2, 1fr); }
+
+  .profile-header { flex-direction: column; text-align: center; padding: 22px 18px; }
+  .profile-grid { padding: 0 18px 22px; }
+
+  .config-bar { flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 420px) {
+  .metric-value { font-size: 1.25rem; }
+  .text-display { font-size: 0.95rem; }
+  .results-grid { grid-template-columns: 1fr 1fr; }
+}

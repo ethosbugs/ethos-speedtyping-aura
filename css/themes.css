@@ -1,0 +1,90 @@
+/* ============================================
+   Ethos Speedtyping v7 — themes.css
+   Alternate palettes applied via body[data-theme]
+   ============================================ */
+
+body[data-theme="midnight"] {
+  --bg-0: #0a0c12;
+  --accent: #7c5cff;
+  --accent-soft: rgba(124, 92, 255, 0.18);
+  --accent-glow: rgba(124, 92, 255, 0.45);
+  --correct: #5eead4;
+  --incorrect: #fb7185;
+}
+
+body[data-theme="aurora"] {
+  --bg-0: #050e13;
+  --accent: #34e2c4;
+  --accent-soft: rgba(52, 226, 196, 0.16);
+  --accent-glow: rgba(52, 226, 196, 0.4);
+  --correct: #7ee787;
+  --incorrect: #ff6b6b;
+}
+
+body[data-theme="ember"] {
+  --bg-0: #120a0a;
+  --accent: #ff7a45;
+  --accent-soft: rgba(255, 122, 69, 0.18);
+  --accent-glow: rgba(255, 122, 69, 0.45);
+  --correct: #ffd166;
+  --incorrect: #ef476f;
+}
+
+body[data-theme="orchid"] {
+  --bg-0: #100a14;
+  --accent: #d68eff;
+  --accent-soft: rgba(214, 142, 255, 0.18);
+  --accent-glow: rgba(214, 142, 255, 0.42);
+  --correct: #8ee3c4;
+  --incorrect: #ff8fa3;
+}
+
+body[data-theme="glacier"] {
+  --bg-0: #08111a;
+  --accent: #5ec9ff;
+  --accent-soft: rgba(94, 201, 255, 0.16);
+  --accent-glow: rgba(94, 201, 255, 0.4);
+  --correct: #a7f0ba;
+  --incorrect: #ff8080;
+}
+
+body[data-theme="mono"] {
+  --bg-0: #0b0b0b;
+  --accent: #e7e9f5;
+  --accent-soft: rgba(231, 233, 245, 0.14);
+  --accent-glow: rgba(231, 233, 245, 0.3);
+  --correct: #9ba0b8;
+  --incorrect: #ff5c5c;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* Theme picker swatches (settings view) */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.theme-swatch {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--glass-bg);
+  transition: border-color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+
+.theme-swatch:hover { transform: translateY(-2px); }
+.theme-swatch.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft); }
+
+.theme-swatch-dots { display: flex; gap: 6px; }
+.theme-dot { width: 16px; height: 16px; border-radius: 50%; }
+.theme-swatch-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
